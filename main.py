@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from prettytable import PrettyTable
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.select import Select
 
 print("Starting Script...")
 
@@ -181,6 +182,41 @@ if pt==ai_blogs and pl==ai_blog_links:
     results.add_row([19, "Posts on AI in Education Page are correct", "OK"])
 else:
     results.add_row([19, "Posts on AI in Education Page", "FAIL"])
+
+results.add_row(['', "", ""])
+
+# JOIN US
+join = driver.find_element(By.LINK_TEXT, "Join Us")
+join.click()
+joinus = driver.find_element(By.CSS_SELECTOR, 'a[href="/join-us/why-join-us/"]')
+joinus.click()
+results.add_row([20, "Navigate to Why Join Us Page through Header on  AI in Education Page", "OK"])
+
+# COPYRIGHT FOOTER
+copy="© 2017 The Sparks Foundation. All Rights Reserved | Design by W3layouts"
+right="W3layouts"
+cw_text=driver.find_element(By.CSS_SELECTOR,".copyright-wthree>p")
+cw_link=driver.find_element(By.CSS_SELECTOR,".copyright-wthree>p>a")
+if cw_text.text==copy and cw_link.text==right:
+    results.add_row([21, "Copyright Footer on AI in Why Join Us Page are correct", "OK"])
+else:
+    results.add_row([21, "Copyright Footer on Why Join Us Page", "FAIL"])
+
+# REGISTER
+n="myName"
+e="myEmail@address.com"
+name=driver.find_element(By.NAME,"Name")
+email=driver.find_element(By.NAME,"Email")
+name.clear()
+email.clear()
+name.send_keys(n)
+email.send_keys(e)
+select_element = driver.find_element(By.CLASS_NAME,'form-control')
+select_object = Select(select_element)
+select_object.select_by_index(1)
+submit=driver.find_element(By.CSS_SELECTOR,'input[value="Submit"]')
+submit.click()
+results.add_row([22, "Register for Email Alerts Form on Why Join Us Page works", "OK"])
 
 # OUTPUT RESULTS TABLE
 print(results)
