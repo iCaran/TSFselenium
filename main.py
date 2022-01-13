@@ -2,16 +2,30 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from prettytable import PrettyTable
+from selenium.webdriver.chrome.service import Service
 
+print("Starting Script...")
+
+ser = Service("C:\SeleniumDrivers\chromedriver.exe")
+options = webdriver.ChromeOptions()
+
+# Comment out following 2 lines if you want to display the browser window
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+
+driver = webdriver.Chrome(service=ser, options=options)
+
+# CREATE RESULTS TABLE
 results = PrettyTable()
 results.field_names = ['#', 'TEST NAME', 'RESULT']
 
-os.environ['PATH'] += r"C:/SeleniumDrivers"
-driver = webdriver.Chrome()
+print("Opening Website on Chrome...")
 
 # HOME PAGE
 driver.get("https://www.thesparksfoundationsingapore.org/")
 results.add_row([1, "Home Page loads", "OK"])
+
+print("Site Open. Performing Tests ...")
 
 # LOGO
 logo = driver.find_element(By.CSS_SELECTOR, ".navbar-brand > img")
@@ -70,7 +84,7 @@ results.add_row([8, "Navigate to Policies Page through Header on News Page", "OK
 
 # POLICIES TITLE
 news_title = driver.find_element(By.CLASS_NAME, "inner-tittle-w3layouts")
-if (news_title.text == "Policies"):
+if news_title.text == "Policies":
     results.add_row([9, "Policies Page title", "OK"])
 else:
     results.add_row([9, "Policies Page title", "FAIL"])
@@ -102,7 +116,31 @@ else:
 
 results.add_row(['', "", ""])
 
+# Student Mentorship Program
+prog = driver.find_element(By.LINK_TEXT, "Programs")
+prog.click()
+ment = driver.find_element(By.CSS_SELECTOR, 'a[href="/programs/student-mentorship-program/"]')
+ment.click()
+results.add_row([13, "Navigate to Student Scholarship Program Page through Header on Policies Page", "OK"])
+
+# QUOTES
+Q=["Don't limit a child to your own learning, for he was born in another time.","A child miseducated is a child lost."]
+A=["Rabindranath Tagore","John F. Kennedy"]
+quotes=driver.find_elements(By.CLASS_NAME,"para-w3-agile")
+q=[quote for quote in quotes]
+authors=driver.find_elements(By.CSS_SELECTOR,".agile>div>div>h4")
+a=[author for author in authors]
+if Q[0]==q[0].text and A[0]==a[0].text:
+    results.add_row([14,"Rabindranath Tagore Quote properly displayed","OK"])
+else:
+    results.add_row([14, "Rabindranath Tagore Quote properly displayed","FAIL"])
+if Q[1]==q[1].text and A[1]==a[1].text:
+    results.add_row([15,"John F. Kennedy Quote properly displayed","OK"])
+else:
+    results.add_row([15, "John F. Kennedy Quote properly displayed","FAIL"])
+
+# OUTPUT RESULTS TABLE
 print(results)
-print("TEST SUCCESSFUL.\t0 ERRORS FOUND.\t\tSITE CONDITION is HEALTHY.\nEnding Process With Code 0.")
+print("TEST SUCCESSFUL.\t0 ERRORS FOUND.\t\tWEBSITE CONDITION is HEALTHY.\nEnding Process With Code 0.")
 
 driver.quit()
