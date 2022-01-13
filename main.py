@@ -106,9 +106,10 @@ else:
     results.add_row([11, "Tile of Post on Policy Page", "FAIL"])
 
 # POLICY SECTIONS
-psec=['Conflict of Interest Policy','Staff Remuneration and Appraisal Policies','Financial Policies','Reserve Policy','Investment Policy','Policies for Members of the Board and Sub-Committees']
-sections=driver.find_elements(By.CSS_SELECTOR, ".media-body > h4")
-sec=[i for i in psec]
+psec = ['Conflict of Interest Policy', 'Staff Remuneration and Appraisal Policies', 'Financial Policies',
+        'Reserve Policy', 'Investment Policy', 'Policies for Members of the Board and Sub-Committees']
+sections = driver.find_elements(By.CSS_SELECTOR, ".media-body > h4")
+sec = [i for i in psec]
 if (sec == psec):
     results.add_row([12, "All sub-sections on Policy Page are correct", "OK"])
 else:
@@ -124,20 +125,62 @@ ment.click()
 results.add_row([13, "Navigate to Student Scholarship Program Page through Header on Policies Page", "OK"])
 
 # QUOTES
-Q=["Don't limit a child to your own learning, for he was born in another time.","A child miseducated is a child lost."]
-A=["Rabindranath Tagore","John F. Kennedy"]
-quotes=driver.find_elements(By.CLASS_NAME,"para-w3-agile")
-q=[quote for quote in quotes]
-authors=driver.find_elements(By.CSS_SELECTOR,".agile>div>div>h4")
-a=[author for author in authors]
-if Q[0]==q[0].text and A[0]==a[0].text:
-    results.add_row([14,"Rabindranath Tagore Quote properly displayed","OK"])
+Q = ["Don't limit a child to your own learning, for he was born in another time.",
+     "A child miseducated is a child lost."]
+A = ["Rabindranath Tagore", "John F. Kennedy"]
+quotes = driver.find_elements(By.CLASS_NAME, "para-w3-agile")
+q = [quote for quote in quotes]
+authors = driver.find_elements(By.CSS_SELECTOR, ".agile>div>div>h4")
+a = [author for author in authors]
+if Q[0] == q[0].text and A[0] == a[0].text:
+    results.add_row([14, "Rabindranath Tagore Quote properly displayed", "OK"])
 else:
-    results.add_row([14, "Rabindranath Tagore Quote properly displayed","FAIL"])
-if Q[1]==q[1].text and A[1]==a[1].text:
-    results.add_row([15,"John F. Kennedy Quote properly displayed","OK"])
+    results.add_row([14, "Rabindranath Tagore Quote properly displayed", "FAIL"])
+if Q[1] == q[1].text and A[1] == a[1].text:
+    results.add_row([15, "John F. Kennedy Quote properly displayed", "OK"])
 else:
-    results.add_row([15, "John F. Kennedy Quote properly displayed","FAIL"])
+    results.add_row([15, "John F. Kennedy Quote properly displayed", "FAIL"])
+
+results.add_row(['', "", ""])
+
+# AI in Education
+links = driver.find_element(By.LINK_TEXT, "LINKS")
+links.click()
+ai = driver.find_element(By.CSS_SELECTOR, 'a[href="/links/ai-in-education/"]')
+ai.click()
+results.add_row([16, "Navigate to AI in Education Page through Header on Student Scholarship Program Page", "OK"])
+
+# AI PAGE TITLE
+aititle = "Use Of Artificial Intelligence To Enhance Education System"
+ai_title = driver.find_element(By.CSS_SELECTOR, ".tittle-agileits-w3layouts > span")
+if ai_title.text == aititle:
+    results.add_row([17, "Tile of Post on AI in Education Page is correct", "OK"])
+else:
+    results.add_row([17, "Tile of Post on AI in Education Page", "FAIL"])
+
+# AI SIDEBAR
+ai_l=['https://links.aine.ai/', 'https://www.thesparksfoundationsingapore.org/links/software-and-app/', 'https://www.thesparksfoundationsingapore.org/links/salient-features/', 'https://www.thesparksfoundationsingapore.org/links/ai-in-education/']
+ai=['Visit LINKS @TSF', 'Software & App', 'Salient Features', 'AI in Education']
+ai_side = driver.find_element(By.CSS_SELECTOR, ".w3l-blog-list > ul")
+sidebar = ai_side.find_elements(By.TAG_NAME, "li")
+aiposts=[post.text for post in sidebar]
+l=driver.find_elements(By.CSS_SELECTOR, ".w3l-blog-list > ul > li > a")
+links = [elem.get_attribute('href') for elem in l]
+if ai==aiposts and links==ai_l:
+    results.add_row([18, "Sidebar on AI in Education Page is correct", "OK"])
+else:
+    results.add_row([18, "Sidebar on AI in Education Page", "FAIL"])
+
+# AI POSTS
+ai_blogs=["Artificial Intelligence In Education: Don't Ignore It, Harness It!", 'Can AI fix education? We asked Bill Gates']
+ai_blog_links=['https://www.forbes.com/sites/sebastienturbot/2017/08/22/artificial-intelligence-virtual-reality-education/', 'https://www.theverge.com/2016/4/25/11492102/bill-gates-interview-education-software-artificial-intelligence']
+p=driver.find_elements(By.CSS_SELECTOR,".blog-info>h4>a")
+pt=[title.text for title in p]
+pl=[elem.get_attribute('href') for elem in p]
+if pt==ai_blogs and pl==ai_blog_links:
+    results.add_row([19, "Posts on AI in Education Page are correct", "OK"])
+else:
+    results.add_row([19, "Posts on AI in Education Page", "FAIL"])
 
 # OUTPUT RESULTS TABLE
 print(results)
