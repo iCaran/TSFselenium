@@ -1,8 +1,9 @@
-import os
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+import time
+
 from prettytable import PrettyTable
+from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
 print("Starting Script...")
@@ -48,6 +49,19 @@ if (nav.text == nav_test):
 else:
     results.add_row([3, "Header on Home Page is correct", "FAIL"])
 
+# SWITCH TO IFRAME
+driver.implicitly_wait(3)
+driver.switch_to.frame(driver.find_element(By.TAG_NAME, "iframe"))
+
+# PLAY VIDEO
+play = driver.find_element(By.CSS_SELECTOR, 'button[aria-label="Play"]')
+play.click()
+time.sleep(5)
+results.add_row([4, "Youtube Video on Home Page plays", "OK"])
+
+# RETURN FROM IFRAME
+driver.switch_to.default_content()
+
 results.add_row(['', "", ""])
 
 # NAVIGATE TO NEWS PAGE
@@ -55,32 +69,32 @@ about_btn = driver.find_element(By.LINK_TEXT, "About Us")
 about_btn.click()
 news_btn = driver.find_element(By.CSS_SELECTOR, 'a[href="/about/news/"]')
 news_btn.click()
-results.add_row([4, "Navigate to News Page through Header on Home Page", "OK"])
+results.add_row([5, "Navigate to News Page through Header on Home Page", "OK"])
 
 # NEWS PAGE TITLE
 title = "The Sparks Foundation In Media"
 news_title = driver.find_element(By.CLASS_NAME, "inner-tittle-w3layouts")
 if (news_title.text == title):
-    results.add_row([5, "News Page title", "OK"])
+    results.add_row([6, "News Page title", "OK"])
 else:
-    results.add_row([5, "News Page title", "FAIL"])
+    results.add_row([6, "News Page title", "FAIL"])
 
 # BLOG POSTS
 post_sections = driver.find_element(By.CSS_SELECTOR, ".w3l-blog-list > ul")
 posts = post_sections.find_elements(By.TAG_NAME, "li")
 if len(posts) == 7:
-    results.add_row([6, "7 Blog Posts on News Page", "OK"])
+    results.add_row([7, "7 Blog Posts on News Page", "OK"])
 else:
-    results.add_row([6, "7 Blog Posts on News Page", "FAIL"])
+    results.add_row([7, "7 Blog Posts on News Page", "FAIL"])
 
 # SOCIAL MEDIA POSTS
 social = ['@Facebook', '@Medium', '@Twitter']
 ele = driver.find_elements(By.CSS_SELECTOR, ".tittle-agileits-w3layouts > span")
 sm = [i.text for i in ele]
 if (sm == social):
-    results.add_row([7, "Social Media Posts on News Page", "OK"])
+    results.add_row([8, "Social Media Posts on News Page", "OK"])
 else:
-    results.add_row([7, "Social Media Posts on News Page", "FAIL"])
+    results.add_row([8, "Social Media Posts on News Page", "FAIL"])
 
 results.add_row(['', "", ""])
 
@@ -89,30 +103,30 @@ pc_btn = driver.find_element(By.LINK_TEXT, "Policies and Code")
 pc_btn.click()
 policies = driver.find_element(By.CSS_SELECTOR, 'a[href="/policies-and-code/policies/"]')
 policies.click()
-results.add_row([8, "Navigate to Policies Page through Header on News Page", "OK"])
+results.add_row([9, "Navigate to Policies Page through Header on News Page", "OK"])
 
 # POLICIES TITLE
 news_title = driver.find_element(By.CLASS_NAME, "inner-tittle-w3layouts")
 if news_title.text == "Policies":
-    results.add_row([9, "Policies Page title", "OK"])
+    results.add_row([10, "Policies Page title", "OK"])
 else:
-    results.add_row([9, "Policies Page title", "FAIL"])
+    results.add_row([10, "Policies Page title", "FAIL"])
 
 # POLICY BLOGS
 policy_post_sections = driver.find_element(By.CSS_SELECTOR, ".w3l-blog-list > ul")
 posts = policy_post_sections.find_elements(By.TAG_NAME, "li")
 if len(posts) == 5:
-    results.add_row([10, "5 Posts on Blog Section on Policy Page", "OK"])
+    results.add_row([11, "5 Posts on Blog Section on Policy Page", "OK"])
 else:
-    results.add_row([10, "55 Posts on Blog Section on Policy Page", "FAIL"])
+    results.add_row([11, "55 Posts on Blog Section on Policy Page", "FAIL"])
 
 # POLICY PAGE TITLE
 ptitle = "Summary Of Important Policies At The Sparks Foundation"
 policy_title = driver.find_element(By.CSS_SELECTOR, ".tittle-agileits-w3layouts > span")
 if policy_title.text == ptitle:
-    results.add_row([11, "Tile of Post on Policy Page", "OK"])
+    results.add_row([12, "Tile of Post on Policy Page", "OK"])
 else:
-    results.add_row([11, "Tile of Post on Policy Page", "FAIL"])
+    results.add_row([12, "Tile of Post on Policy Page", "FAIL"])
 
 # POLICY SECTIONS
 psec = ['Conflict of Interest Policy', 'Staff Remuneration and Appraisal Policies', 'Financial Policies',
@@ -120,9 +134,9 @@ psec = ['Conflict of Interest Policy', 'Staff Remuneration and Appraisal Policie
 sections = driver.find_elements(By.CSS_SELECTOR, ".media-body > h4")
 sec = [i for i in psec]
 if (sec == psec):
-    results.add_row([12, "All sub-sections on Policy Page are correct", "OK"])
+    results.add_row([13, "All sub-sections on Policy Page are correct", "OK"])
 else:
-    results.add_row([12, "All sub-sections on Policy Page are correct", "FAIL"])
+    results.add_row([13, "All sub-sections on Policy Page are correct", "FAIL"])
 
 results.add_row(['', "", ""])
 
@@ -131,7 +145,7 @@ prog = driver.find_element(By.LINK_TEXT, "Programs")
 prog.click()
 ment = driver.find_element(By.CSS_SELECTOR, 'a[href="/programs/student-mentorship-program/"]')
 ment.click()
-results.add_row([13, "Navigate to Student Scholarship Program Page through Header on Policies Page", "OK"])
+results.add_row([14, "Navigate to Student Scholarship Program Page through Header on Policies Page", "OK"])
 
 # QUOTES
 Q = ["Don't limit a child to your own learning, for he was born in another time.",
@@ -142,13 +156,28 @@ q = [quote for quote in quotes]
 authors = driver.find_elements(By.CSS_SELECTOR, ".agile>div>div>h4")
 a = [author for author in authors]
 if Q[0] == q[0].text and A[0] == a[0].text:
-    results.add_row([14, "Rabindranath Tagore Quote properly displayed", "OK"])
+    results.add_row([15, "Rabindranath Tagore Quote properly displayed", "OK"])
 else:
-    results.add_row([14, "Rabindranath Tagore Quote properly displayed", "FAIL"])
+    results.add_row([15, "Rabindranath Tagore Quote properly displayed", "FAIL"])
 if Q[1] == q[1].text and A[1] == a[1].text:
-    results.add_row([15, "John F. Kennedy Quote properly displayed", "OK"])
+    results.add_row([16, "John F. Kennedy Quote properly displayed", "OK"])
 else:
-    results.add_row([15, "John F. Kennedy Quote properly displayed", "FAIL"])
+    results.add_row([16, "John F. Kennedy Quote properly displayed", "FAIL"])
+
+# FOOTER
+sc_li = ['https://www.facebook.com/thesparksfoundation.info', 'https://www.linkedin.com/company/the-sparks-foundation/',
+         'https://medium.com/thesparksfoundation', 'https://twitter.com/tsfsingapore',
+         'https://thesparksfoundation.info/', 'https://instagram.com/thesparksfoundation.info', 'https://xaltius.tech/',
+         'https://aine.ai/', 'http://codefor.in/', 'https://www.indeedjobs.com/the-sparks-foundation/',
+         'https://angel.co/the-sparks-foundation/jobs', 'https://www.techinasia.com/companies/the-sparks-foundation',
+         'https://internshala.com/internships/internship-at-The%20Sparks%20Foundation',
+         'https://thesparksfoundation.info/', 'http://thesparksfoundation.in/', 'http://w3layouts.com/']
+social_links = driver.find_elements(By.CSS_SELECTOR, 'a[target="_blank"]')
+s_l = [link.get_attribute("href") for link in social_links]
+if (s_l == sc_li):
+    results.add_row([17, "External Social Links on Footer are Correct", "OK"])
+else:
+    results.add_row([17, "External Social Links on Footer", "FAIL"])
 
 results.add_row(['', "", ""])
 
@@ -157,15 +186,15 @@ links = driver.find_element(By.LINK_TEXT, "LINKS")
 links.click()
 ai = driver.find_element(By.CSS_SELECTOR, 'a[href="/links/ai-in-education/"]')
 ai.click()
-results.add_row([16, "Navigate to AI in Education Page through Header on Student Scholarship Program Page", "OK"])
+results.add_row([18, "Navigate to AI in Education Page through Header on Student Scholarship Program Page", "OK"])
 
 # AI PAGE TITLE
 aititle = "Use Of Artificial Intelligence To Enhance Education System"
 ai_title = driver.find_element(By.CSS_SELECTOR, ".tittle-agileits-w3layouts > span")
 if ai_title.text == aititle:
-    results.add_row([17, "Tile of Post on AI in Education Page is correct", "OK"])
+    results.add_row([19, "Tile of Post on AI in Education Page is correct", "OK"])
 else:
-    results.add_row([17, "Tile of Post on AI in Education Page", "FAIL"])
+    results.add_row([19, "Tile of Post on AI in Education Page", "FAIL"])
 
 # AI SIDEBAR
 ai_l = ['https://links.aine.ai/', 'https://www.thesparksfoundationsingapore.org/links/software-and-app/',
@@ -178,9 +207,9 @@ aiposts = [post.text for post in sidebar]
 l = driver.find_elements(By.CSS_SELECTOR, ".w3l-blog-list > ul > li > a")
 links = [elem.get_attribute('href') for elem in l]
 if ai == aiposts and links == ai_l:
-    results.add_row([18, "Sidebar on AI in Education Page is correct", "OK"])
+    results.add_row([20, "Sidebar on AI in Education Page is correct", "OK"])
 else:
-    results.add_row([18, "Sidebar on AI in Education Page", "FAIL"])
+    results.add_row([20, "Sidebar on AI in Education Page", "FAIL"])
 
 # AI POSTS
 ai_blogs = ["Artificial Intelligence In Education: Don't Ignore It, Harness It!",
@@ -192,9 +221,9 @@ p = driver.find_elements(By.CSS_SELECTOR, ".blog-info>h4>a")
 pt = [title.text for title in p]
 pl = [elem.get_attribute('href') for elem in p]
 if pt == ai_blogs and pl == ai_blog_links:
-    results.add_row([19, "Posts on AI in Education Page are correct", "OK"])
+    results.add_row([21, "Posts on AI in Education Page are correct", "OK"])
 else:
-    results.add_row([19, "Posts on AI in Education Page", "FAIL"])
+    results.add_row([21, "Posts on AI in Education Page", "FAIL"])
 
 results.add_row(['', "", ""])
 
@@ -203,7 +232,7 @@ join = driver.find_element(By.LINK_TEXT, "Join Us")
 join.click()
 joinus = driver.find_element(By.CSS_SELECTOR, 'a[href="/join-us/why-join-us/"]')
 joinus.click()
-results.add_row([20, "Navigate to Why Join Us Page through Header on  AI in Education Page", "OK"])
+results.add_row([22, "Navigate to Why Join Us Page through Header on  AI in Education Page", "OK"])
 
 # COPYRIGHT FOOTER
 copy = "© 2017 The Sparks Foundation. All Rights Reserved | Design by W3layouts"
@@ -211,9 +240,9 @@ right = "W3layouts"
 cw_text = driver.find_element(By.CSS_SELECTOR, ".copyright-wthree>p")
 cw_link = driver.find_element(By.CSS_SELECTOR, ".copyright-wthree>p>a")
 if cw_text.text == copy and cw_link.text == right:
-    results.add_row([21, "Copyright Footer on AI in Why Join Us Page are correct", "OK"])
+    results.add_row([23, "Copyright Footer on AI in Why Join Us Page are correct", "OK"])
 else:
-    results.add_row([21, "Copyright Footer on Why Join Us Page", "FAIL"])
+    results.add_row([23, "Copyright Footer on Why Join Us Page", "FAIL"])
 
 # REGISTER
 n = "myName"
@@ -229,14 +258,14 @@ select_object = Select(select_element)
 select_object.select_by_index(1)
 submit = driver.find_element(By.CSS_SELECTOR, 'input[value="Submit"]')
 submit.click()
-results.add_row([22, "Register for Email Alerts Form on Why Join Us Page works", "OK"])
+results.add_row([24, "Register for Email Alerts Form on Why Join Us Page works", "OK"])
 
 results.add_row(['', "", ""])
 
 # CONTACT US
 contact = driver.find_element(By.LINK_TEXT, "Contact Us")
 contact.click()
-results.add_row([23, "Navigate to Contact Us Page through Header on  Why Join Us Page", "OK"])
+results.add_row([25, "Navigate to Contact Us Page through Header on  Why Join Us Page", "OK"])
 
 # SWITCH TO IFRAME
 driver.implicitly_wait(3)
@@ -248,14 +277,14 @@ add = "The Hangar, I-Cube, 21 Heng Mui Keng Terrace, 119613"
 place = driver.find_element(By.CLASS_NAME, "place-name")
 addr = driver.find_element(By.CLASS_NAME, "address")
 if place.text == pla and addr.text == add:
-    results.add_row([23, "GoogleMaps iFrame on Contact Us Page is correct", "OK"])
+    results.add_row([26, "GoogleMaps iFrame on Contact Us Page is correct", "OK"])
 else:
-    results.add_row([23, "GoogleMaps iFrame on Contact Us Page", "FAIL"])
+    results.add_row([26, "GoogleMaps iFrame on Contact Us Page", "FAIL"])
 
 # MAP ZOOM IN
 zoom = driver.find_element(By.CSS_SELECTOR, 'button[title="Zoom in"]')
 zoom.click()
-results.add_row([24, "GoogleMaps iFrame on Contact Us Page is interactive", "OK"])
+results.add_row([27, "GoogleMaps iFrame on Contact Us Page is interactive", "OK"])
 
 # RETURN FROM IFRAME
 driver.switch_to.default_content()
@@ -270,9 +299,9 @@ address = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div[2]
 phone = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[3]/div[2]/p[2]")
 if linkedin.text == lin_text and linkedin.get_attribute(
         'href') == lin_link and address.text == addre and phone.text == phonemail:
-    results.add_row([25, "Linkedin, Address, Phone, Email on Contact Us Page is correct", "OK"])
+    results.add_row([28, "Linkedin, Address, Phone, Email on Contact Us Page is correct", "OK"])
 else:
-    results.add_row([25, "Linkedin, Address, Phone, Email on Contact Us Page", "FAIL"])
+    results.add_row([28, "Linkedin, Address, Phone, Email on Contact Us Page", "FAIL"])
 
 # OUTPUT RESULTS TABLE
 print(results)
