@@ -11,10 +11,18 @@ ser = Service("C:\SeleniumDrivers\chromedriver.exe")
 options = webdriver.ChromeOptions()
 
 # Comment out following 2 lines if you want to display the browser window
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
+# Note: iFrames will not load on headless browsers
+'''options.add_argument('--headless')
+options.add_argument('--disable-gpu')'''
 
 driver = webdriver.Chrome(service=ser, options=options)
+
+# MINIMIZE BROWSER WINDOW
+# Note: Will also cause error with iFrames
+# driver.minimize_window()
+
+# MAXIMIZE: Best result with iFrames
+driver.maximize_window()
 
 # CREATE RESULTS TABLE
 results = PrettyTable()
@@ -160,25 +168,30 @@ else:
     results.add_row([17, "Tile of Post on AI in Education Page", "FAIL"])
 
 # AI SIDEBAR
-ai_l=['https://links.aine.ai/', 'https://www.thesparksfoundationsingapore.org/links/software-and-app/', 'https://www.thesparksfoundationsingapore.org/links/salient-features/', 'https://www.thesparksfoundationsingapore.org/links/ai-in-education/']
-ai=['Visit LINKS @TSF', 'Software & App', 'Salient Features', 'AI in Education']
+ai_l = ['https://links.aine.ai/', 'https://www.thesparksfoundationsingapore.org/links/software-and-app/',
+        'https://www.thesparksfoundationsingapore.org/links/salient-features/',
+        'https://www.thesparksfoundationsingapore.org/links/ai-in-education/']
+ai = ['Visit LINKS @TSF', 'Software & App', 'Salient Features', 'AI in Education']
 ai_side = driver.find_element(By.CSS_SELECTOR, ".w3l-blog-list > ul")
 sidebar = ai_side.find_elements(By.TAG_NAME, "li")
-aiposts=[post.text for post in sidebar]
-l=driver.find_elements(By.CSS_SELECTOR, ".w3l-blog-list > ul > li > a")
+aiposts = [post.text for post in sidebar]
+l = driver.find_elements(By.CSS_SELECTOR, ".w3l-blog-list > ul > li > a")
 links = [elem.get_attribute('href') for elem in l]
-if ai==aiposts and links==ai_l:
+if ai == aiposts and links == ai_l:
     results.add_row([18, "Sidebar on AI in Education Page is correct", "OK"])
 else:
     results.add_row([18, "Sidebar on AI in Education Page", "FAIL"])
 
 # AI POSTS
-ai_blogs=["Artificial Intelligence In Education: Don't Ignore It, Harness It!", 'Can AI fix education? We asked Bill Gates']
-ai_blog_links=['https://www.forbes.com/sites/sebastienturbot/2017/08/22/artificial-intelligence-virtual-reality-education/', 'https://www.theverge.com/2016/4/25/11492102/bill-gates-interview-education-software-artificial-intelligence']
-p=driver.find_elements(By.CSS_SELECTOR,".blog-info>h4>a")
-pt=[title.text for title in p]
-pl=[elem.get_attribute('href') for elem in p]
-if pt==ai_blogs and pl==ai_blog_links:
+ai_blogs = ["Artificial Intelligence In Education: Don't Ignore It, Harness It!",
+            'Can AI fix education? We asked Bill Gates']
+ai_blog_links = [
+    'https://www.forbes.com/sites/sebastienturbot/2017/08/22/artificial-intelligence-virtual-reality-education/',
+    'https://www.theverge.com/2016/4/25/11492102/bill-gates-interview-education-software-artificial-intelligence']
+p = driver.find_elements(By.CSS_SELECTOR, ".blog-info>h4>a")
+pt = [title.text for title in p]
+pl = [elem.get_attribute('href') for elem in p]
+if pt == ai_blogs and pl == ai_blog_links:
     results.add_row([19, "Posts on AI in Education Page are correct", "OK"])
 else:
     results.add_row([19, "Posts on AI in Education Page", "FAIL"])
@@ -193,30 +206,73 @@ joinus.click()
 results.add_row([20, "Navigate to Why Join Us Page through Header on  AI in Education Page", "OK"])
 
 # COPYRIGHT FOOTER
-copy="© 2017 The Sparks Foundation. All Rights Reserved | Design by W3layouts"
-right="W3layouts"
-cw_text=driver.find_element(By.CSS_SELECTOR,".copyright-wthree>p")
-cw_link=driver.find_element(By.CSS_SELECTOR,".copyright-wthree>p>a")
-if cw_text.text==copy and cw_link.text==right:
+copy = "© 2017 The Sparks Foundation. All Rights Reserved | Design by W3layouts"
+right = "W3layouts"
+cw_text = driver.find_element(By.CSS_SELECTOR, ".copyright-wthree>p")
+cw_link = driver.find_element(By.CSS_SELECTOR, ".copyright-wthree>p>a")
+if cw_text.text == copy and cw_link.text == right:
     results.add_row([21, "Copyright Footer on AI in Why Join Us Page are correct", "OK"])
 else:
     results.add_row([21, "Copyright Footer on Why Join Us Page", "FAIL"])
 
 # REGISTER
-n="myName"
-e="myEmail@address.com"
-name=driver.find_element(By.NAME,"Name")
-email=driver.find_element(By.NAME,"Email")
+n = "myName"
+e = "myEmail@address.com"
+name = driver.find_element(By.NAME, "Name")
+email = driver.find_element(By.NAME, "Email")
 name.clear()
 email.clear()
 name.send_keys(n)
 email.send_keys(e)
-select_element = driver.find_element(By.CLASS_NAME,'form-control')
+select_element = driver.find_element(By.CLASS_NAME, 'form-control')
 select_object = Select(select_element)
 select_object.select_by_index(1)
-submit=driver.find_element(By.CSS_SELECTOR,'input[value="Submit"]')
+submit = driver.find_element(By.CSS_SELECTOR, 'input[value="Submit"]')
 submit.click()
 results.add_row([22, "Register for Email Alerts Form on Why Join Us Page works", "OK"])
+
+results.add_row(['', "", ""])
+
+# CONTACT US
+contact = driver.find_element(By.LINK_TEXT, "Contact Us")
+contact.click()
+results.add_row([23, "Navigate to Contact Us Page through Header on  Why Join Us Page", "OK"])
+
+# SWITCH TO IFRAME
+driver.implicitly_wait(3)
+driver.switch_to.frame(driver.find_element(By.TAG_NAME, "iframe"))
+
+# MAP ADDRESS CORRECT
+pla = "Wattah Pte Ltd"
+add = "The Hangar, I-Cube, 21 Heng Mui Keng Terrace, 119613"
+place = driver.find_element(By.CLASS_NAME, "place-name")
+addr = driver.find_element(By.CLASS_NAME, "address")
+if place.text == pla and addr.text == add:
+    results.add_row([23, "GoogleMaps iFrame on Contact Us Page is correct", "OK"])
+else:
+    results.add_row([23, "GoogleMaps iFrame on Contact Us Page", "FAIL"])
+
+# MAP ZOOM IN
+zoom = driver.find_element(By.CSS_SELECTOR, 'button[title="Zoom in"]')
+zoom.click()
+results.add_row([24, "GoogleMaps iFrame on Contact Us Page is interactive", "OK"])
+
+# RETURN FROM IFRAME
+driver.switch_to.default_content()
+
+# CONTACT INFO
+lin_text = "JOIN TSF NETWORK HERE (https://www.linkedin.com/groups/10379184/)"
+lin_link = "https://www.linkedin.com/groups/10379184/"
+addre = 'THE HANGAR, NUS ENTERPRISE\n21 HENG MUI KENG TERRACE, SINGAPORE, 119613'
+phonemail = '+65-8402-8590, info@thesparksfoundation.sg'
+linkedin = driver.find_element(By.CSS_SELECTOR, ".col-md-12>div>p>span>a")
+address = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div[2]/p")
+phone = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[3]/div[2]/p[2]")
+if linkedin.text == lin_text and linkedin.get_attribute(
+        'href') == lin_link and address.text == addre and phone.text == phonemail:
+    results.add_row([25, "Linkedin, Address, Phone, Email on Contact Us Page is correct", "OK"])
+else:
+    results.add_row([25, "Linkedin, Address, Phone, Email on Contact Us Page", "FAIL"])
 
 # OUTPUT RESULTS TABLE
 print(results)
