@@ -6,10 +6,11 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
-print("Starting Script...")
+print("\nStarting Script ...")
 
 ser = Service("C:\SeleniumDrivers\chromedriver.exe")
 options = webdriver.ChromeOptions()
+options.add_experimental_option('excludeSwitches',['enable-logging'])
 
 # Comment out following 2 lines if you want to display the browser window
 # Note: iFrames will not load on headless browsers
@@ -29,13 +30,13 @@ driver.maximize_window()
 results = PrettyTable()
 results.field_names = ['#', 'TEST NAME', 'RESULT']
 
-print("Opening Website on Chrome...")
+print("Opening Website on Chrome ...")
 
 # HOME PAGE
 driver.get("https://www.thesparksfoundationsingapore.org/")
 results.add_row([1, "Home Page loads", "OK"])
 
-print("Site Open. Performing Tests ...")
+print("Site Open. Performing Tests ...\n")
 
 # LOGO
 logo = driver.find_element(By.CSS_SELECTOR, ".navbar-brand > img")
@@ -305,6 +306,6 @@ else:
 
 # OUTPUT RESULTS TABLE
 print(results)
-print("TEST SUCCESSFUL.\t0 ERRORS FOUND.\t\tWEBSITE CONDITION is HEALTHY.\nEnding Process With Code 0.")
+print("\nTEST SUCCESSFUL.\t0 ERRORS FOUND.\t\tWEBSITE CONDITION is HEALTHY.\nEnding Process With Code 0.")
 
 driver.quit()
